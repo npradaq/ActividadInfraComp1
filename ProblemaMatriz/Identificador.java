@@ -1,4 +1,4 @@
-package Main;
+package ProblemaMatriz;
 
 public class Identificador {
 

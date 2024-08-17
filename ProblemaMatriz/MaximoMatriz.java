@@ -1,4 +1,4 @@
-package Main;
+package ProblemaMatriz;
 
 import java.util.concurrent.ThreadLocalRandom;
 
