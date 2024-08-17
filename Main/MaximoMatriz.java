@@ -3,9 +3,11 @@ package Main;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MaximoMatriz extends Thread {
-    private final static int INT_MAX = 20;
+    private final static int INT_MAX = 100;
 
     private final static int DIM = 3;
+
+    private static Identificador identificador = new Identificador(DIM);
 
     private static int[][] matriz = new int[DIM][DIM];
 
@@ -19,9 +21,10 @@ public class MaximoMatriz extends Thread {
 
     private int fila;
 
-    public MaximoMatriz(int pIdThread, int pFila){
-        this.idThread = pIdThread;
-        this.fila = pFila;
+    public MaximoMatriz(){
+        int i = identificador.darId();
+        this.idThread = i;
+        this.fila = i;
     }
 
     public static void crearMatriz(){
@@ -59,8 +62,6 @@ public class MaximoMatriz extends Thread {
             );
             System.out.println(warn);
         }
-
-        
 
     }
 
@@ -105,7 +106,7 @@ public class MaximoMatriz extends Thread {
         MaximoMatriz[] bThreads = new MaximoMatriz[DIM];
 
         for (int i = 0; i < DIM; i++) {
-            bThreads[i] = new MaximoMatriz(i, i);
+            bThreads[i] = new MaximoMatriz();
             bThreads[i].start();
         }
     }   
