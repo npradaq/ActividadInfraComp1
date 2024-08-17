@@ -11,6 +11,8 @@ public class MaximoMatriz extends Thread {
 
     private static int mayor = -1;
 
+    private static int countUltimoThread = DIM;
+
     private int mayorFila = -1;
 
     private int idThread;
@@ -43,22 +45,10 @@ public class MaximoMatriz extends Thread {
         }
     }
 
-    @Override
-    public void run() {
-        for (int j = 0; j < DIM; j++){
-            if(this.mayorFila < matriz[this.fila][j]) {
-                this.mayorFila = matriz[this.fila][j];
-            }
-        }
-
-        if(this.mayorFila > mayor) {
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            mayor = this.mayorFila;
+    private synchronized void cambiarMayorGlobal(){
+        if(mayorFila > mayor){
+            mayor = mayorFila;
+            
             String warn = String.format(
                     "**********NUEVO MAXIMO ENCONTRADO********** \n" +
                     "ID THREAD: %d - Maximo local actual: %d - Maximo global: %d \n" +
@@ -68,22 +58,49 @@ public class MaximoMatriz extends Thread {
                     this.mayorFila
             );
             System.out.println(warn);
+        }
 
+        
+
+    }
+
+    @Override
+    public void  run() {
+        for (int j = 0; j < DIM; j++){
+            if(this.mayorFila < matriz[this.fila][j]) {
+                this.mayorFila = matriz[this.fila][j];
+            }
+        }
+
+        cambiarMayorGlobal();
+
+        countUltimoThread --;
+
+        if (countUltimoThread == 0) {
+
+            String msg = String.format("ID THREAD: %d - Maximo Local: %d - Maximo Global: %d \n",
+                        this.idThread,
+                        this.mayorFila,
+                        mayor
+            );
+            System.out.println("-----------------------------------------");
+            System.out.println();
+            System.out.println(msg);
+            System.out.println();
+            System.out.println("-----------------------------------------");
+            System.out.println();
         }
     
-        String msg = String.format("ID THREAD: %d - Maximo Local: %d - Maximo Global: %d \n",
-                    this.idThread,
-                    this.mayorFila,
-                    mayor
-        );
-        System.out.println(msg);
+        
 
     }
 
     public static void main(String[] args) {
+        
         MaximoMatriz.crearMatriz();
         System.out.println();
         System.out.println("INICIANDO BUSQUEDA \n");
+        
 
         MaximoMatriz[] bThreads = new MaximoMatriz[DIM];
 
